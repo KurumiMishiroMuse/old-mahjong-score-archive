@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>旧式⇔現代 麻雀点数換算表</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#f4efe3;
+        --bg-pattern:rgba(31,58,77,.055);
+        --surface:#fffdf6;
+        --surface-2:#fbf7ec;
+        --ink:#22303a;
+        --ink-strong:#14232e;
+        --muted:#5f6d72;
+        --line:#ddd3bd;
+        --line-strong:#c9bb97;
+        --indigo:#1f3a4d;
+        --indigo-deep:#162c3d;
+        --indigo-soft:#e8eef0;
+        --shu:#b3402e;
+        --shu-soft:#f9e9e4;
+        --matsu:#2f5d4a;
+        --matsu-soft:#e7efe9;
+        /* 旧式コラム */
+        --old-head:#1f3a4d;
+        --old-head-ink:#f6e8c8;
+        --old-bg:#fdf3d3;
+        --old-bg-alt:#fbeec4;
+        --old-ink:#5c430a;
+        --old-ink-strong:#3d2d04;
+        --old-edge:#c9a227;
+        --old-edge-soft:#e3c766;
+        /* 現代コラム */
+        --new-head:#e9e6da;
+        --new-head-ink:#41505a;
+        --new-bg:#ffffff;
+        --new-bg-alt:#f6f4ec;
+        --tile:#fffef9;
+        --tile-edge:#d8d2c2;
+        --shadow:0 1px 2px rgba(20,35,46,.06),0 10px 30px -18px rgba(20,35,46,.35);
+        --radius:14px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#10181b;
+          --bg-pattern:rgba(246,232,200,.05);
+          --surface:#1a2427;
+          --surface-2:#1f2b2e;
+          --ink:#e8e2d2;
+          --ink-strong:#f7f2e2;
+          --muted:#a7b0ac;
+          --line:#37444a;
+          --line-strong:#4c5a5e;
+          --indigo:#8fb4c7;
+          --indigo-soft:#22333d;
+          --shu:#e08a76;
+          --shu-soft:#3a2723;
+          --matsu:#8fc3a8;
+          --matsu-soft:#22332b;
+          --old-head:#0f2739;
+          --old-head-ink:#f6e3ae;
+          --old-bg:#3a3016;
+          --old-bg-alt:#443a1b;
+          --old-ink:#f3df9f;
+          --old-ink-strong:#fbeec0;
+          --old-edge:#c9a227;
+          --old-edge-soft:#8a7226;
+          --new-head:#2a3438;
+          --new-head-ink:#c8d0cc;
+          --new-bg:#1e292c;
+          --new-bg-alt:#232f32;
+          --tile:#262f31;
+          --tile-edge:#4a565a;
+          --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -18px rgba(0,0,0,.8);
+        }
+      }
+      *{ box-sizing:border-box; }
+      html{ -webkit-text-size-adjust:100%; }
+      body{
+        margin:0;
+        font-family:"Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", system-ui, sans-serif;
+        background:
+          radial-gradient(circle at 12px 12px, var(--bg-pattern) 1.6px, transparent 1.7px) 0 0/28px 28px,
+          var(--bg);
+        color:var(--ink);
+        line-height:1.65;
+      }
+      button{ min-height:44px; }
+      .wrap{ max-width:1060px; margin:0 auto; padding:28px 18px 56px; }
+
+      /* ---------- 見出し ---------- */
+      .masthead{ text-align:center; padding:10px 0 4px; }
+      .masthead .rule{ display:flex; align-items:center; gap:14px; max-width:560px; margin:0 auto 14px; }
+      .masthead .rule::before,.masthead .rule::after{ content:""; flex:1; height:1px; background:var(--line-strong); }
+      .masthead .rule span{ font-family:"Shippori Mincho", serif; font-size:.78rem; letter-spacing:.42em; color:var(--shu); font-weight:700; padding-left:.42em; }
+      h1{
+        font-family:"Shippori Mincho", "Hiragino Mincho ProN", serif;
+        font-weight:800; color:var(--ink-strong);
+        font-size:clamp(1.65rem, 5.4vw, 2.6rem);
+        line-height:1.25; margin:0 0 10px; letter-spacing:.04em;
+      }
+      h1 .swap{ color:var(--shu); }
+      h1 .old-word{ color:var(--old-edge); }
+      .lead{ margin:0 auto; max-width:640px; color:var(--muted); font-size:.95rem; }
+      .lead strong{ color:var(--ink-strong); }
+      .scope-chips{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:14px; }
+      .chip{
+        font-size:.78rem; font-weight:700; letter-spacing:.06em;
+        border:1px solid var(--line-strong); border-radius:999px;
+        padding:5px 12px; background:var(--surface); color:var(--muted);
+      }
+      .chip b{ color:var(--shu); font-weight:900; }
+
+      /* ---------- 早見ルックアップ ---------- */
+      .lookup{
+        margin-top:26px; background:var(--surface); border:1px solid var(--line);
+        border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;
+      }
+      .lookup-head{
+        display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+        padding:14px 18px 0;
+      }
+      .lookup-head h2{
+        font-family:"Shippori Mincho", serif; font-size:1.08rem; margin:0; color:var(--ink-strong); letter-spacing:.05em;
+      }
+      .lookup-head p{ margin:0; font-size:.8rem; color:var(--muted); }
+      .lookup-body{ padding:14px 18px 18px; display:grid; gap:14px; }
+      .pick-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+      .pick-label{ font-size:.8rem; font-weight:900; letter-spacing:.14em; color:var(--muted); min-width:2.6em; }
+      .seg{ display:flex; gap:6px; flex-wrap:wrap; }
+      .seg button{
+        font:inherit; font-weight:900; font-size:.95rem; cursor:pointer;
+        min-width:52px; padding:8px 14px;
+        color:var(--ink); background:var(--surface-2);
+        border:1.5px solid var(--line-strong); border-radius:9px;
+      }
+      .seg button:hover{ border-color:var(--indigo); }
+      .seg button[aria-pressed="true"]{
+        background:var(--indigo); border-color:var(--indigo); color:#fdf6dd;
+      }
+      @media (prefers-color-scheme: dark){
+        .seg button[aria-pressed="true"]{ background:#2c4a61; border-color:#8fb4c7; color:#f6e8c8; }
+      }
+      .seg button:focus-visible{ outline:3px solid var(--old-edge); outline-offset:2px; }
+      .result{
+        display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:stretch;
+      }
+      .result-card{ border-radius:11px; padding:12px 14px 13px; }
+      .result-card .rc-label{ font-size:.74rem; font-weight:900; letter-spacing:.16em; margin-bottom:2px; }
+      .result-card .rc-who{ display:flex; justify-content:space-between; gap:8px; font-variant-numeric:tabular-nums; }
+      .result-card .rc-who + .rc-who{ margin-top:2px; }
+      .result-card .rc-who .who{ font-size:.82rem; font-weight:700; opacity:.85; }
+      .result-card .rc-who .pts{ font-size:clamp(1.25rem,4.6vw,1.7rem); font-weight:900; line-height:1.2; }
+      .result-card .rc-who .pts small{ font-size:.72rem; font-weight:700; margin-left:2px; }
+      .rc-old{
+        background:var(--old-bg); border:1.5px solid var(--old-edge);
+        color:var(--old-ink-strong);
+        box-shadow:inset 0 0 0 3px var(--surface);
+      }
+      .rc-old .rc-label{ color:var(--old-ink); }
+      .rc-new{ background:var(--new-bg-alt); border:1px solid var(--line); color:var(--ink-strong); }
+      .rc-new .rc-label{ color:var(--muted); }
+      .result-arrow{ align-self:center; text-align:center; color:var(--shu); font-weight:900; font-size:.8rem; line-height:1.3; }
+      .result-arrow .big{ display:block; font-size:1.35rem; line-height:1; }
+      .result-note{ font-size:.8rem; color:var(--muted); margin:0; }
+      .result-note b{ color:var(--old-ink); }
+      @media (max-width:560px){
+        .result{ grid-template-columns:1fr; }
+        .result-arrow{ padding:0; }
+        .result-arrow .big{ transform:rotate(90deg); display:inline-block; }
+      }
+
+      /* ---------- 解説 ---------- */
+      .explainer{
+        margin-top:20px; background:var(--surface); border:1px solid var(--line);
+        border-left:5px solid var(--shu); border-radius:var(--radius);
+        box-shadow:var(--shadow); padding:18px 20px;
+      }
+      .explainer h2{
+        font-family:"Shippori Mincho", serif; font-size:1.05rem; margin:0 0 8px; color:var(--ink-strong); letter-spacing:.05em;
+      }
+      .explainer p{ margin:0; font-size:.94rem; }
+      .explainer p + p{ margin-top:10px; }
+      .formula{
+        display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px;
+        margin-top:14px; padding:12px 14px; border-radius:10px;
+        background:var(--surface-2); border:1px dashed var(--line-strong);
+        font-variant-numeric:tabular-nums;
+      }
+      .formula .f-box{ font-weight:900; color:var(--ink-strong); font-size:.95rem; }
+      .formula .f-box em{ font-style:normal; color:var(--shu); }
+      .formula .f-box .old-part{ color:var(--old-ink); background:var(--old-bg); border:1px solid var(--old-edge-soft); border-radius:6px; padding:1px 7px; }
+      .formula .f-arrow{ color:var(--shu); font-weight:900; }
+      .formula .f-note{ font-size:.78rem; color:var(--muted); font-weight:700; }
+
+      /* ---------- 旧式の際立ちを伝える帯 ---------- */
+      .old-banner{
+        margin-top:20px; border-radius:var(--radius);
+        background:var(--old-head); color:var(--old-head-ink);
+        padding:14px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap;
+        box-shadow:var(--shadow);
+      }
+      .old-banner .ob-mark{
+        font-family:"Shippori Mincho", serif; font-weight:800; font-size:1rem;
+        border:1.5px solid var(--old-edge); color:var(--old-head-ink);
+        border-radius:8px; padding:5px 12px; letter-spacing:.14em; white-space:nowrap;
+      }
+      .old-banner p{ margin:0; font-size:.88rem; flex:1; min-width:230px; }
+      .old-banner p b{ color:#ffe9a8; }
+      @media (prefers-color-scheme: light){ .old-banner p b{ color:#ffd968; } }
+      .old-banner .ob-sample{ font-variant-numeric:tabular-nums; font-weight:900; letter-spacing:.03em; white-space:nowrap; }
+      .old-banner .ob-sample .zero{ color:#ffd968; }
+
+      /* ---------- 点数表 ---------- */
+      .tables{ margin-top:22px; display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+      @media (max-width:820px){ .tables{ grid-template-columns:1fr; } }
+      .han-card{
+        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        box-shadow:var(--shadow); overflow:hidden;
+      }
+      .han-head{
+        display:flex; align-items:center; gap:12px;
+        padding:13px 16px 11px; border-bottom:1px solid var(--line);
+        background:linear-gradient(var(--surface-2), var(--surface-2));
+      }
+      .tile{
+        width:46px; height:58px; flex:none;
+        background:var(--tile); border:1px solid var(--tile-edge); border-bottom:4px solid var(--tile-edge);
+        border-radius:7px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+        box-shadow:0 2px 5px rgba(20,35,46,.14);
+        font-family:"Shippori Mincho", serif; line-height:1.05;
+      }
+      .tile .t-num{ font-size:1.3rem; font-weight:800; color:var(--matsu); }
+      .tile .t-han{ font-size:.78rem; font-weight:700; color:var(--shu); letter-spacing:.3em; padding-left:.3em; }
+      .han-head h3{ margin:0; font-family:"Shippori Mincho", serif; font-size:1.12rem; color:var(--ink-strong); letter-spacing:.06em; }
+      .han-head .han-sub{ margin:1px 0 0; font-size:.76rem; color:var(--muted); }
+      .han-head .han-badge{
+        margin-left:auto; font-size:.72rem; font-weight:900; letter-spacing:.08em;
+        color:var(--shu); background:var(--shu-soft); border:1px solid currentColor;
+        border-radius:999px; padding:4px 10px; white-space:nowrap;
+      }
+      table.score{ width:100%; border-collapse:separate; border-spacing:0; font-variant-numeric:tabular-nums; }
+      table.score th, table.score td{ text-align:right; padding:9px 10px; }
+      table.score thead .group-old, table.score thead .group-new{
+        text-align:center; font-size:.82rem; letter-spacing:.1em; padding:8px 6px 6px;
+      }
+      table.score thead .group-old{
+        background:var(--old-head); color:var(--old-head-ink);
+        border-bottom:2px solid var(--old-edge);
+      }
+      table.score thead .group-old .g-sub{ display:block; font-size:.66rem; letter-spacing:.08em; color:var(--old-edge-soft); font-weight:700; margin-top:1px; }
+      @media (prefers-color-scheme: light){ table.score thead .group-old .g-sub{ color:#d9bc55; } }
+      table.score thead .group-new{ background:var(--new-head); color:var(--new-head-ink); border-bottom:2px solid var(--line-strong); }
+      table.score thead .group-new .g-sub{ display:block; font-size:.66rem; letter-spacing:.08em; color:var(--muted); font-weight:700; margin-top:1px; }
+      table.score thead .group-fu{ background:var(--surface-2); border-bottom:2px solid var(--line-strong); }
+      table.score thead .col-head th{
+        font-size:.74rem; font-weight:900; letter-spacing:.06em; color:var(--muted);
+        padding:6px 10px 7px; border-bottom:1px solid var(--line); text-align:right;
+      }
+      table.score thead .col-head th.old-h{
+        background:var(--old-bg); color:var(--old-ink);
+        border-left:2px solid var(--old-edge); border-right:0;
+      }
+      table.score thead .col-head th.old-h.last{ border-right:2px solid var(--old-edge); }
+      table.score thead .col-head th:first-child{ text-align:center; }
+      table.score tbody th.fu{
+        text-align:center; font-weight:900; color:var(--ink-strong);
+        background:var(--surface-2); font-size:.92rem; white-space:nowrap;
+        border-bottom:1px solid var(--line);
+      }
+      table.score tbody th.fu small{ font-size:.68rem; color:var(--muted); font-weight:700; }
+      table.score tbody td{
+        font-size:1.02rem; border-bottom:1px solid var(--line); white-space:nowrap;
+      }
+      table.score tbody tr:last-child td, table.score tbody tr:last-child th.fu{ border-bottom:0; }
+      /* 旧式セル：金地＋太字で際立たせる */
+      table.score td.old{
+        background:var(--old-bg); color:var(--old-ink-strong); font-weight:900;
+        border-left:2px solid var(--old-edge);
+      }
+      table.score td.old.last{ border-right:2px solid var(--old-edge); }
+      table.score tbody tr:nth-child(even) td.old{ background:var(--old-bg-alt); }
+      table.score td.old .zero{ color:var(--shu); }
+      table.score td.new{ background:var(--new-bg); color:var(--ink); font-weight:700; }
+      table.score tbody tr:nth-child(even) td.new{ background:var(--new-bg-alt); }
+      table.score tbody tr{ transition:background .12s ease; }
+      table.score tbody tr:hover td.new{ background:var(--indigo-soft); }
+      table.score tbody tr:hover td.old{ background:var(--old-edge-soft); }
+      @media (prefers-color-scheme: dark){
+        table.score tbody tr:hover td.old{ background:#57481f; }
+      }
+      .mangan{
+        display:inline-block; font-size:.78rem; font-weight:900; letter-spacing:.14em;
+        color:#fff; background:var(--shu); border-radius:6px; padding:2px 9px 2px 11px; vertical-align:2px;
+      }
+      @media (prefers-color-scheme: dark){ .mangan{ color:#1d1210; background:#e08a76; } }
+      td.mangan-cell{ text-align:center !important; }
+      .han-note{ padding:10px 16px 13px; font-size:.78rem; color:var(--muted); border-top:1px dashed var(--line); margin:0; }
+      .han-note b{ color:var(--shu); }
+
+      @media (max-width:560px){
+        .wrap{ padding:20px 10px 44px; }
+        table.score th, table.score td{ padding:8px 5px; }
+        table.score tbody td{ font-size:.92rem; }
+        table.score thead .col-head th{ padding:6px 5px 7px; font-size:.68rem; }
+        table.score thead .group-old, table.score thead .group-new{ font-size:.76rem; padding:7px 3px 5px; }
+        .tile{ width:40px; height:52px; }
+        .han-head{ padding:11px 12px 9px; gap:10px; }
+        .explainer, .lookup-body{ padding-left:14px; padding-right:14px; }
+        .explainer{ padding:15px 14px; }
+      }
+
+      /* ---------- セクション見出し ---------- */
+      .section-head{ margin-top:34px; margin-bottom:4px; }
+      .section-head:first-of-type{ margin-top:26px; }
+      .section-head .sec-rule{ display:flex; align-items:center; gap:12px; }
+      .section-head .sec-rule::after{ content:""; flex:1; height:1px; background:var(--line-strong); }
+      .section-head h2{
+        font-family:"Shippori Mincho", serif; font-size:1.28rem; margin:0; color:var(--ink-strong); letter-spacing:.06em;
+      }
+      .section-head h2 .sec-kanji{ color:var(--shu); }
+      .section-head p{ margin:4px 0 0; font-size:.84rem; color:var(--muted); max-width:760px; }
+      .section-head p b{ color:var(--ink-strong); }
+      .jump-nav{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:16px; }
+      .jump-nav a{
+        font-size:.8rem; font-weight:900; letter-spacing:.04em; text-decoration:none;
+        color:var(--indigo); background:var(--surface); border:1.5px solid var(--line-strong);
+        border-radius:999px; padding:7px 14px;
+      }
+      .jump-nav a:hover{ border-color:var(--indigo); }
+      @media (prefers-color-scheme: dark){ .jump-nav a{ color:var(--indigo); } }
+      .seg button.is-hidden{ display:none; }
+      .pick-label.wide{ min-width:4.6em; }
+      /* 20符ピンフツモ注記カード */
+      .pinfu-card{
+        margin-top:20px; background:var(--surface); border:1px solid var(--line);
+        border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;
+      }
+      .pinfu-head{ padding:13px 16px 11px; border-bottom:1px solid var(--line); background:var(--surface-2); }
+      .pinfu-head h3{ margin:0; font-family:"Shippori Mincho", serif; font-size:1.05rem; color:var(--ink-strong); letter-spacing:.05em; }
+      .pinfu-head p{ margin:2px 0 0; font-size:.8rem; color:var(--muted); }
+      .pinfu-body{ padding:13px 16px 15px; display:grid; gap:10px; font-size:.9rem; }
+      .pinfu-body p{ margin:0; }
+      .pinfu-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      @media (max-width:640px){ .pinfu-grid{ grid-template-columns:1fr; } }
+      .pinfu-box{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--new-bg-alt); }
+      .pinfu-box .pb-label{ font-size:.74rem; font-weight:900; letter-spacing:.14em; color:var(--muted); margin-bottom:4px; }
+      .pinfu-box ul{ margin:0; padding-left:1.1em; font-variant-numeric:tabular-nums; }
+      .pinfu-box li + li{ margin-top:2px; }
+      table.score td.all-cell{ text-align:center; font-size:1.08rem; }
+      /* ---------- 七対子メモ（小さなメモカード） ---------- */
+      .chiitoi-card{
+        margin-top:20px; background:var(--surface); border:1px solid var(--line);
+        border-top:3px dashed var(--old-edge);
+        border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;
+      }
+      .chiitoi-head{
+        display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+        padding:11px 16px 9px; border-bottom:1px solid var(--line); background:var(--surface-2);
+      }
+      .chiitoi-head h3{ margin:0; font-family:"Shippori Mincho", serif; font-size:1rem; color:var(--ink-strong); letter-spacing:.05em; }
+      .chiitoi-head .chiitoi-tag{
+        font-size:.7rem; font-weight:900; letter-spacing:.08em;
+        color:var(--shu); background:var(--shu-soft); border:1px solid currentColor;
+        border-radius:999px; padding:3px 9px; white-space:nowrap;
+      }
+      .chiitoi-head p{ margin:0 0 0 auto; font-size:.78rem; color:var(--muted); }
+      @media (max-width:640px){ .chiitoi-head p{ margin-left:0; } }
+      .chiitoi-body{ padding:13px 16px 15px; }
+      .chiitoi-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      @media (max-width:640px){ .chiitoi-grid{ grid-template-columns:1fr; } }
+      .chiitoi-box{ border-radius:10px; padding:11px 13px 12px; font-size:.88rem; }
+      .chiitoi-box p{ margin:0; }
+      .chiitoi-box .cb-label{ font-size:.74rem; font-weight:900; letter-spacing:.1em; margin-bottom:6px; }
+      .chiitoi-box.old{
+        background:var(--old-bg); border:1.5px solid var(--old-edge); color:var(--old-ink-strong);
+      }
+      .chiitoi-box.old .cb-label{ color:var(--old-ink); }
+      .chiitoi-box.new{
+        background:var(--new-bg-alt); border:1px solid var(--line); color:var(--ink);
+      }
+      .chiitoi-box.new .cb-label{ color:var(--muted); }
+      .chiitoi-box .cb-chain{
+        margin-top:9px; padding-top:8px; border-top:1px dashed var(--line-strong);
+        font-variant-numeric:tabular-nums; font-size:.82rem; font-weight:700; line-height:1.7;
+      }
+      .chiitoi-box.old .cb-chain{ border-top-color:var(--old-edge-soft); }
+      .chiitoi-box .cb-chain .cb-chain-label{ display:block; font-size:.7rem; letter-spacing:.1em; font-weight:900; opacity:.75; margin-bottom:1px; }
+      .mangan-note{
+        margin-top:12px; border:1px dashed var(--line-strong); border-radius:10px;
+        padding:11px 13px 12px; font-size:.88rem; background:var(--surface-2); color:var(--ink);
+      }
+      .mangan-note p{ margin:0; }
+      .mangan-note .mn-label{ font-size:.74rem; font-weight:900; letter-spacing:.1em; color:var(--muted); margin-bottom:5px; }
+      .tsumo-note{
+        margin-top:16px; background:var(--old-bg); border:1.5px solid var(--old-edge);
+        border-radius:11px; padding:12px 15px; color:var(--old-ink-strong); font-size:.88rem;
+      }
+      .tsumo-note b{ color:var(--old-ink-strong); }
+      .tsumo-note p{ margin:0; }
+      .tsumo-note p + p{ margin-top:6px; }
+
+      /* ---------- 脚注 ---------- */
+      .footnotes{ margin-top:24px; font-size:.83rem; color:var(--muted); }
+      .footnotes h2{ font-family:"Shippori Mincho", serif; font-size:.95rem; color:var(--ink-strong); margin:0 0 6px; letter-spacing:.06em; }
+      .footnotes ul{ margin:0; padding-left:1.25em; }
+      .footnotes li + li{ margin-top:4px; }
+      .footnotes b{ color:var(--ink-strong); }
+      .colophon{
+        margin-top:28px; text-align:center; font-family:"Shippori Mincho", serif;
+        color:var(--muted); font-size:.78rem; letter-spacing:.3em;
+      }
+      .colophon::before{ content:""; display:block; width:56px; height:1px; background:var(--line-strong); margin:0 auto 12px; }
+
+      @media print{
+        .lookup .seg, .lookup-head p{ display:none; }
+        body{ background:#fff; }
+        .han-card, .lookup, .explainer{ box-shadow:none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <header class="masthead">
+        <div class="rule"><span>麻雀点数表</span></div>
+        <h1><span class="old-word">旧式</span> <span class="swap">⇔</span> 現代<br />麻雀点数換算表</h1>
+        <p class="lead">場ゾロ（バンバン）導入前の<strong>旧式点数</strong>と、現在の<strong>現代点数</strong>を並べた換算表です。旧式は現代のちょうど <strong>÷4</strong> ―― 切り上げを外すと、すべて綺麗な10点単位の数字になります。ツモ払いは実物の旧式点数カード「自摸栄」表の転記です。</p>
+        <div class="scope-chips" aria-label="この表の範囲">
+          <span class="chip"><b>ロン</b>＋<b>ツモ</b></span>
+          <span class="chip">1飜〜4飜</span>
+          <span class="chip">ロン 30〜70符 ／ ツモ 30〜80符</span>
+          <span class="chip">20符は現代ピンフツモのみ注記</span>
+        </div>
+        <nav class="jump-nav" aria-label="表への移動">
+          <a href="#ron-section">ロン和了の表へ</a>
+          <a href="#tsumo-ko-section">子ツモの表へ</a>
+          <a href="#tsumo-oya-section">親ツモの表へ</a>
+          <a href="#pinfu-section">20符ピンフツモへ</a>
+          <a href="#chiitoi-section">七対子メモへ</a>
+          <a href="#mangan-ceiling-section">満貫が天井メモへ</a>
+        </nav>
+      </header>
+
+      <!-- 早見ルックアップ -->
+      <section class="lookup" aria-labelledby="lookup-title">
+        <div class="lookup-head">
+          <h2 id="lookup-title">早見ルックアップ</h2>
+          <p>和了形（ロン／子ツモ／親ツモ）と飜数・符を選ぶと、旧式と現代を並べて表示します。ロンは70符まで、ツモは80符まで選べます。</p>
+        </div>
+        <div class="lookup-body">
+          <div class="pick-row">
+            <span class="pick-label wide" id="label-mode">和了形</span>
+            <div class="seg" role="group" aria-labelledby="label-mode" id="seg-mode">
+              <button type="button" data-mode="ron" aria-pressed="true">ロン</button>
+              <button type="button" data-mode="ko" aria-pressed="false">子ツモ</button>
+              <button type="button" data-mode="oya" aria-pressed="false">親ツモ</button>
+            </div>
+          </div>
+          <div class="pick-row">
+            <span class="pick-label" id="label-han">飜数</span>
+            <div class="seg" role="group" aria-labelledby="label-han" id="seg-han">
+              <button type="button" data-han="1" aria-pressed="true">1飜</button>
+              <button type="button" data-han="2" aria-pressed="false">2飜</button>
+              <button type="button" data-han="3" aria-pressed="false">3飜</button>
+              <button type="button" data-han="4" aria-pressed="false">4飜</button>
+            </div>
+          </div>
+          <div class="pick-row">
+            <span class="pick-label" id="label-fu">符</span>
+            <div class="seg" role="group" aria-labelledby="label-fu" id="seg-fu">
+              <button type="button" data-fu="30" aria-pressed="true">30符</button>
+              <button type="button" data-fu="40" aria-pressed="false">40符</button>
+              <button type="button" data-fu="50" aria-pressed="false">50符</button>
+              <button type="button" data-fu="60" aria-pressed="false">60符</button>
+              <button type="button" data-fu="70" aria-pressed="false" id="fu-btn-70">70符</button>
+              <button type="button" data-fu="80" aria-pressed="false" class="is-hidden" id="fu-btn-80">80符</button>
+            </div>
+          </div>
+          <div class="result" aria-live="polite">
+            <div class="result-card rc-old">
+              <div class="rc-label" id="res-old-label">旧式 ― 場ゾロなし</div>
+              <div id="res-old-rows">
+                <div class="rc-who"><span class="who">子ロン</span><span class="pts" id="res-old-ko">240<small>点</small></span></div>
+                <div class="rc-who"><span class="who">親ロン</span><span class="pts" id="res-old-oya">360<small>点</small></span></div>
+              </div>
+            </div>
+            <div class="result-arrow" id="res-arrow"><span class="big">→</span>×4＋<br />切り上げ</div>
+            <div class="result-card rc-new">
+              <div class="rc-label" id="res-new-label">現代 ― 場ゾロあり</div>
+              <div id="res-new-rows">
+                <div class="rc-who"><span class="who">子ロン</span><span class="pts" id="res-new-ko">1,000<small>点</small></span></div>
+                <div class="rc-who"><span class="who">親ロン</span><span class="pts" id="res-new-oya">1,500<small>点</small></span></div>
+              </div>
+            </div>
+          </div>
+          <p class="result-note" id="res-note">旧式は <b>240 / 360</b> ともに10点単位で割り切れます。現代は100点切り上げのため、単純な4倍（960 / 1,440）より少し大きな数字になります。</p>
+        </div>
+      </section>
+
+      <!-- 解説 -->
+      <section class="explainer" aria-labelledby="exp-title">
+        <h2 id="exp-title">換算の考え方 ― 場ゾロとは</h2>
+        <p>÷4＝場ゾロ分。現代の基本点＝符×2^(飜数+2) の +2 が場ゾロ（戦後導入）。旧式はそれを取り除き、100点切り上げをせず10点単位のまま支払う前提で再構成したもの。</p>
+        <div class="formula" aria-label="基本点の式の比較">
+          <span class="f-box">現代の基本点 ＝ 符 × 2<sup>(飜数<em>+2</em>)</sup></span>
+          <span class="f-arrow">― 場ゾロを取り除く（÷4）→</span>
+          <span class="f-box">旧式の基本点 ＝ <span class="old-part">符 × 2<sup>飜数</sup></span></span>
+          <span class="f-note">ロン点 ＝ 基本点 ×4（子）／ ×6（親）。現代のみ100点単位へ切り上げ</span>
+        </div>
+      </section>
+
+      <!-- 旧式の際立ち -->
+      <div class="old-banner">
+        <span class="ob-mark">旧式の列</span>
+        <p>金色の列が旧式です。どのマスも末尾は必ず <b>0</b> ―― <b>10点単位で割り切れる</b>ため、点棒のやり取りに端数が一切出ません。</p>
+        <span class="ob-sample" aria-hidden="true">240 ・ 480 ・ 960 ・ 1,920</span>
+      </div>
+
+      <!-- ロン点数表 -->
+      <div class="section-head" id="ron-section">
+        <div class="sec-rule"><h2><span class="sec-kanji">栄</span> ロン和了</h2></div>
+        <p>放銃した1人から受け取る点数です。旧式は実物カード準拠で<b>満貫の上限がなく</b>、4飜50符・60符も生の数値のまま載っています（現代側は満貫で頭打ち）。旧式のロン表は70符まで（80符はない）。ツモ表だけ80符まである。</p>
+      </div>
+      <main class="tables" id="tables"><!-- JSで生成 --></main>
+
+      <!-- 子ツモ点数表 -->
+      <div class="section-head" id="tsumo-ko-section">
+        <div class="sec-rule"><h2><span class="sec-kanji">自摸栄</span> ツモ和了 ― 子ツモ</h2></div>
+        <p>子がツモったときの払いです。各マスは <b>子払い ・ 親払い</b> の順。旧式は実物カード「自摸栄」表の転記で、30符から80符まであります。</p>
+      </div>
+      <div class="tables" id="tables-tsumo-ko"><!-- JSで生成 --></div>
+
+      <!-- 親ツモ点数表 -->
+      <div class="section-head" id="tsumo-oya-section">
+        <div class="sec-rule"><h2><span class="sec-kanji">自摸栄</span> ツモ和了 ― 親ツモ</h2></div>
+        <p>親がツモったときは全員同額払い（<b>オール</b>）です。各マスの数字は1人あたりの払いを示します。</p>
+      </div>
+      <div class="tables" id="tables-tsumo-oya"><!-- JSで生成 --></div>
+
+      <div class="tsumo-note" role="note">
+        <p><b>旧式のツモ表は30符から始まる ―― 20符の概念がない。</b>現代のピンフツモは、ツモの2符が付いてもピンフとして20符で扱われる特例です。</p>
+        <p>旧式ではピンフでツモるとツモの2符が付いてしまうため、ピンフとして扱えず「ツモ」のみになる、という違いもここに表れています。</p>
+      </div>
+
+      <!-- 20符ピンフツモ（現代のみ） -->
+      <section class="pinfu-card" id="pinfu-section" aria-labelledby="pinfu-title">
+        <div class="pinfu-head">
+          <h3 id="pinfu-title">20符 ― ピンフツモ専用（現代のみ）</h3>
+          <p>20符1飜は存在しません（ピンフ＋ツモで最低2飜になるため）。旧式には20符の表自体がありません。</p>
+        </div>
+        <div class="pinfu-body">
+          <div class="pinfu-grid">
+            <div class="pinfu-box">
+              <div class="pb-label">現代 ・ 子ツモ（子払い ・ 親払い）</div>
+              <ul>
+                <li>2飜 ― 400 ・ 700</li>
+                <li>3飜 ― 700 ・ 1,300</li>
+                <li>4飜 ― 1,300 ・ 2,600</li>
+                <li>5飜 ― <span class="mangan">満貫</span></li>
+              </ul>
+            </div>
+            <div class="pinfu-box">
+              <div class="pb-label">現代 ・ 親ツモ（オール）</div>
+              <ul>
+                <li>2飜 ― 700オール</li>
+                <li>3飜 ― 1,300オール</li>
+                <li>4飜 ― 2,600オール</li>
+                <li>5飜 ― <span class="mangan">満貫</span></li>
+              </ul>
+            </div>
+          </div>
+          <p>参考：ピンフツモの代表例、子の300・500は合計1,300点。ツモのみで見ると、旧式の感覚では現代でも1,000点クラスに収まる手です。</p>
+        </div>
+      </section>
+
+      <!-- 七対子メモ -->
+      <section class="chiitoi-card" id="chiitoi-section" aria-labelledby="chiitoi-title">
+        <div class="chiitoi-head">
+          <h3 id="chiitoi-title">七対子メモ</h3>
+          <span class="chiitoi-tag">表の外の手</span>
+          <p>旧式は倍々で素直に計算できる ⇔ 現代は25符固定の特例で半端になる</p>
+        </div>
+        <div class="chiitoi-body">
+          <div class="chiitoi-grid">
+            <div class="chiitoi-box old">
+              <div class="cb-label">旧式（実物カードの記載）― 倍々で計算できる</div>
+              <p>七対子は符で計算せず、「荘家二百点・散家一百点」がそのまま基本点になる。飜が1つ増えるごとに倍々になるので、表がなくても計算できる。ロン受け取り（基本点×4／親は×6）の例: 子は単独400 → +1飜800 → +2飜1600 → +3飜3200。親は単独1200 → +1飜2400 → +2飜4800 → +3飜9600。</p>
+            </div>
+            <div class="chiitoi-box new">
+              <div class="cb-label">現代 ― 25符固定の特例で半端になる</div>
+              <p>七対子は25符固定・2飜という特例で、通常の符の表には載らない半端な数字になる。子ロン1600・親ロン2400、子ツモ400・800、親ツモ800オール。飜が増えると 3飜で子ロン3200・親ロン4800、4飜で子ロン6400・親ロン9600、5飜で満貫。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 満貫が天井メモ -->
+      <section class="chiitoi-card" id="mangan-ceiling-section" aria-labelledby="mangan-ceiling-title">
+        <div class="chiitoi-head">
+          <h3 id="mangan-ceiling-title">満貫が天井だった</h3>
+          <span class="chiitoi-tag">実物カードの役一覧</span>
+          <p>旧式はすべて満貫で頭打ち ⇔ 現代は役満は満貫の4倍</p>
+        </div>
+        <div class="chiitoi-body">
+          <div class="chiitoi-grid">
+            <div class="chiitoi-box old">
+              <div class="cb-label">旧式（実物カードの役一覧）― 満貫が天井</div>
+              <p>旧式（実物カードの役一覧）では、現代で役満になる手——九連宝燈・大三元・四喜和・清老頭・字一色・四暗刻・十三幺九——は、すべて「満貫」で頭打ち。満貫より上の段そのものがなく、満貫が天井だった。九連宝燈にも「旧い形でも、形が備わっていればよい」といった注記があり、現代の純正形へのこだわりよりゆるい。</p>
+            </div>
+            <div class="chiitoi-box new">
+              <div class="cb-label">現代 ― 役満は満貫の4倍</div>
+              <p>現代では役満は満貫の4倍（子32000・親48000）で、ダブル役満や数え役満まである。旧式と並べると、点数のインフレがよくわかる。</p>
+            </div>
+          </div>
+          <div class="mangan-note">
+            <div class="mn-label">十三幺九と十三不搭</div>
+            <p>なお国士無双は、元々は中国の「十三幺九」という名称。伝わる途中で別物の手「十三不搭」（何も作れないバラバラの13枚）と混ざり合い、十三不搭の方はローカル役に落ちた。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="footnotes" aria-labelledby="notes-title">
+        <h2 id="notes-title">読み方の注記</h2>
+        <ul>
+          <li><b>ロン和了</b>は1〜4飜・30〜70符、<b>ツモ和了</b>は1〜4飜・30〜80符です。ツモの旧式数字は実物の旧式点数カード「自摸栄」表からの転記です。</li>
+          <li><b>旧式のロン表は70符まで（80符はない）。ツモ表だけ80符まである</b> ―― ロン側の実物カード「投了栄」には80符の行がなく、70符が最終行です。</li>
+          <li>旧式ロン数字は「場ゾロを取り除き、100点切り上げをしない」前提で再構成したものです。現代の数字を単純に4で割った値とは、切り上げの分だけ異なります（例：現代 1,000 ÷ 4 ＝ 250 ではなく、旧式は <b>240</b>）。</li>
+          <li><b>旧式には満貫の上限がない（実物カード準拠）</b>ため、ロン4飜50符は子 <b>3,200</b>／親 <b>4,800</b>、4飜60符は子 <b>3,840</b>／親 <b>5,760</b> と生の数値で載せています。現代側は40符から満貫で頭打ちです。</li>
+          <li>現代ツモでは、子ツモ4飜40符・50符・60符と親ツモ4飜40符・50符・60符が満貫、70符・80符は3飜から満貫です。旧式ツモ側は上限なく数値のままです。</li>
+          <li><b>旧式のツモ表は30符から始まる ―― 20符の概念がない。</b>現代のピンフツモは、ツモの2符が付いてもピンフとして20符で扱われる特例です。20符は上記の注記としてのみ載せています。</li>
+          <li>七対子は符の表には載らないため、上の「七対子メモ」で別に扱っています。それ以外の、この範囲にない手は対象外です。</li>
+        </ul>
+      </section>
+
+      <p class="colophon">旧式 ⇔ 現代 ― 場ゾロの前と後</p>
+    </div>
+
+    <script>
+      // 計算済みデータ（ロン和了のみ）。mangan:true は満貫として扱うマス。
+      var DATA = {
+        1: {
+          30: { ok: 240,  oo: 360,  nk: 1000, no: 1500 },
+          40: { ok: 320,  oo: 480,  nk: 1300, no: 2000 },
+          50: { ok: 400,  oo: 600,  nk: 1600, no: 2400 },
+          60: { ok: 480,  oo: 720,  nk: 2000, no: 2900 },
+          70: { ok: 560,  oo: 840,  nk: 2300, no: 3400 }
+        },
+        2: {
+          30: { ok: 480,  oo: 720,  nk: 2000, no: 2900 },
+          40: { ok: 640,  oo: 960,  nk: 2600, no: 3900 },
+          50: { ok: 800,  oo: 1200, nk: 3200, no: 4800 },
+          60: { ok: 960,  oo: 1440, nk: 3900, no: 5800 },
+          70: { ok: 1120, oo: 1680, nk: 4500, no: 6700 }
+        },
+        3: {
+          30: { ok: 960,  oo: 1440, nk: 3900, no: 5800 },
+          40: { ok: 1280, oo: 1920, nk: 5200, no: 7700 },
+          50: { ok: 1600, oo: 2400, nk: 6400, no: 9600 },
+          60: { ok: 1920, oo: 2880, nk: 7700, no: 11600 },
+          70: { ok: 2240, oo: 3360, nk: 8000, no: 12000, newMangan: true }
+        },
+        4: {
+          30: { ok: 1920, oo: 2880, nk: 7700,  no: 11600 },
+          40: { ok: 2560, oo: 3840, nk: 8000,  no: 12000, newMangan: true },
+          50: { ok: 3200, oo: 4800, nk: 8000,  no: 12000, newMangan: true },
+          60: { ok: 3840, oo: 5760, nk: 8000,  no: 12000, newMangan: true },
+          70: { ok: 4480, oo: 6720, nk: 8000,  no: 12000, newMangan: true }
+        }
+      };
+      // ツモ：子ツモ [子払い, 親払い] / 親ツモ オール（1人あたり）
+      // 旧式は実物カード「自摸栄」転記。newMangan は現代側のみ満貫。
+      var TSUMO_KO_OLD = {
+        30: { 1: [60, 120],  2: [120, 240],  3: [240, 480],  4: [480, 960] },
+        40: { 1: [80, 160],  2: [160, 320],  3: [320, 640],  4: [640, 1280] },
+        50: { 1: [100, 200], 2: [200, 400],  3: [400, 800],  4: [800, 1600] },
+        60: { 1: [120, 240], 2: [240, 480],  3: [480, 960],  4: [960, 1920] },
+        70: { 1: [140, 280], 2: [280, 560],  3: [560, 1120], 4: [1120, 2240] },
+        80: { 1: [160, 320], 2: [320, 640],  3: [640, 1280], 4: [1280, 2560] }
+      };
+      var TSUMO_KO_NEW = {
+        30: { 1: [300, 500],   2: [500, 1000],  3: [1000, 2000], 4: [2000, 3900] },
+        40: { 1: [400, 700],   2: [700, 1300],  3: [1300, 2600], 4: { mangan: true, v: [2000, 4000] } },
+        50: { 1: [400, 800],   2: [800, 1600],  3: [1600, 3200], 4: { mangan: true, v: [2000, 4000] } },
+        60: { 1: [500, 1000],  2: [1000, 2000], 3: [2000, 3900], 4: { mangan: true, v: [2000, 4000] } },
+        70: { 1: [600, 1200],  2: [1200, 2300], 3: { mangan: true }, 4: { mangan: true } },
+        80: { 1: [700, 1300],  2: [1300, 2600], 3: { mangan: true }, 4: { mangan: true } }
+      };
+      var TSUMO_OYA_OLD = {
+        30: { 1: 120, 2: 240,  3: 480,  4: 960 },
+        40: { 1: 160, 2: 320,  3: 640,  4: 1280 },
+        50: { 1: 200, 2: 400,  3: 800,  4: 1600 },
+        60: { 1: 240, 2: 480,  3: 960,  4: 1920 },
+        70: { 1: 280, 2: 560,  3: 1120, 4: 2240 },
+        80: { 1: 320, 2: 640,  3: 1280, 4: 2560 }
+      };
+      var TSUMO_OYA_NEW = {
+        30: { 1: 500,  2: 1000, 3: 2000, 4: 3900 },
+        40: { 1: 700,  2: 1300, 3: 2600, 4: { mangan: true, v: 4000 } },
+        50: { 1: 800,  2: 1600, 3: 3200, 4: { mangan: true, v: 4000 } },
+        60: { 1: 1000, 2: 2000, 3: 3900, 4: { mangan: true, v: 4000 } },
+        70: { 1: 1200, 2: 2300, 3: { mangan: true }, 4: { mangan: true } },
+        80: { 1: 1300, 2: 2600, 3: { mangan: true }, 4: { mangan: true } }
+      };
+      var TSUMO_FUS = [30, 40, 50, 60, 70, 80];
+      var HAN_KANJI = { 1: "一", 2: "二", 3: "三", 4: "四" };
+      var FUS = [30, 40, 50, 60, 70];
+
+      function fmt(n) { return n.toLocaleString("ja-JP"); }
+      // 旧式の末尾0を朱で示し、「10点単位で割り切れる」ことを視覚化する
+      function fmtOld(n) {
+        var s = fmt(n);
+        return s.slice(0, -1) + '<span class="zero">0</span>';
+      }
+
+      /* ---------- 表の生成 ---------- */
+      function buildTables() {
+        var host = document.getElementById("tables");
+        var html = "";
+        [1, 2, 3, 4].forEach(function (han) {
+          var badge = han === 4 ? "現代は40符から満貫" : "";
+          html += '<section class="han-card" aria-label="' + han + '飜の点数表">';
+          html += '<div class="han-head">';
+          html += '<div class="tile" aria-hidden="true"><span class="t-num">' + HAN_KANJI[han] + '</span><span class="t-han">飜</span></div>';
+          html += '<div><h3>' + han + '飜</h3><p class="han-sub">ロン和了 ・ 子と親</p></div>';
+          if (badge) html += '<span class="han-badge">' + badge + '</span>';
+          html += '</div>';
+          html += '<table class="score">';
+          html += '<thead>';
+          html += '<tr>'
+            + '<th class="group-fu" scope="col"></th>'
+            + '<th class="group-old" scope="colgroup" colspan="2">旧 式<span class="g-sub">場ゾロなし ・ 10点単位</span></th>'
+            + '<th class="group-new" scope="colgroup" colspan="2">現 代<span class="g-sub">場ゾロあり ・ 100点切り上げ</span></th>'
+            + '</tr>';
+          html += '<tr class="col-head">'
+            + '<th scope="col">符</th>'
+            + '<th scope="col" class="old-h">子ロン</th>'
+            + '<th scope="col" class="old-h last">親ロン</th>'
+            + '<th scope="col">子ロン</th>'
+            + '<th scope="col">親ロン</th>'
+            + '</tr>';
+          html += '</thead><tbody>';
+          FUS.forEach(function (fu) {
+            var d = DATA[han][fu];
+            html += '<tr><th class="fu" scope="row">' + fu + '<small> 符</small></th>';
+            if (d.mangan) {
+              html += '<td class="old mangan-cell" colspan="2"><span class="mangan">満貫</span></td>';
+              html += '<td class="new mangan-cell" colspan="2"><span class="mangan">満貫</span> ' + fmt(8000) + ' / ' + fmt(12000) + '</td>';
+            } else {
+              html += '<td class="old">' + fmtOld(d.ok) + '</td>';
+              html += '<td class="old last">' + fmtOld(d.oo) + '</td>';
+              if (d.newMangan) {
+                html += '<td class="new"><span class="mangan">満貫</span> ' + fmt(d.nk) + '</td>';
+                html += '<td class="new">' + fmt(d.no) + '</td>';
+              } else {
+                html += '<td class="new">' + fmt(d.nk) + '</td>';
+                html += '<td class="new">' + fmt(d.no) + '</td>';
+              }
+            }
+            html += '</tr>';
+          });
+          html += '</tbody></table>';
+          if (han === 4) {
+            html += '<p class="han-note">40符以上は現代では<b>満貫</b>で頭打ち。<b>旧式には満貫の上限がない（実物カード準拠）</b>ため、50符は 3,200／4,800、60符は 3,840／5,760 と生の数値のままです。</p>';
+          }
+          html += '</section>';
+        });
+        host.innerHTML = html;
+      }
+
+      /* ---------- ツモ表の生成 ---------- */
+      function tsumoKoCellNew(cell) {
+        if (cell && cell.mangan) {
+          if (cell.v) return '<span class="mangan">満貫</span> ' + fmt(cell.v[0]) + ' ・ ' + fmt(cell.v[1]);
+          return '<span class="mangan">満貫</span>';
+        }
+        return fmt(cell[0]) + ' ・ ' + fmt(cell[1]);
+      }
+      function buildTsumoKo() {
+        var host = document.getElementById("tables-tsumo-ko");
+        var html = "";
+        [1, 2, 3, 4].forEach(function (han) {
+          var badge = (han === 4) ? "現代は一部満貫" : "";
+          html += '<section class="han-card" aria-label="子ツモ ' + han + '飜の点数表">';
+          html += '<div class="han-head">';
+          html += '<div class="tile" aria-hidden="true"><span class="t-num">' + HAN_KANJI[han] + '</span><span class="t-han">飜</span></div>';
+          html += '<div><h3>' + han + '飜</h3><p class="han-sub">子ツモ ・ 子払い ・ 親払い</p></div>';
+          if (badge) html += '<span class="han-badge">' + badge + '</span>';
+          html += '</div>';
+          html += '<table class="score"><thead>';
+          html += '<tr>'
+            + '<th class="group-fu" scope="col"></th>'
+            + '<th class="group-old" scope="colgroup" colspan="2">旧 式<span class="g-sub">自摸栄 ・ 転記</span></th>'
+            + '<th class="group-new" scope="colgroup" colspan="2">現 代<span class="g-sub">場ゾロあり ・ 100点切り上げ</span></th>'
+            + '</tr>';
+          html += '<tr class="col-head">'
+            + '<th scope="col">符</th>'
+            + '<th scope="col" class="old-h">子払い</th>'
+            + '<th scope="col" class="old-h last">親払い</th>'
+            + '<th scope="col">子払い</th>'
+            + '<th scope="col">親払い</th>'
+            + '</tr>';
+          html += '</thead><tbody>';
+          TSUMO_FUS.forEach(function (fu) {
+            var o = TSUMO_KO_OLD[fu][han];
+            var n = TSUMO_KO_NEW[fu][han];
+            html += '<tr><th class="fu" scope="row">' + fu + '<small> 符</small></th>';
+            html += '<td class="old">' + fmtOld(o[0]) + '</td>';
+            html += '<td class="old last">' + fmtOld(o[1]) + '</td>';
+            if (n && n.mangan) {
+              if (n.v) {
+                html += '<td class="new"><span class="mangan">満貫</span> ' + fmt(n.v[0]) + '</td>';
+                html += '<td class="new">' + fmt(n.v[1]) + '</td>';
+              } else {
+                html += '<td class="new mangan-cell" colspan="2"><span class="mangan">満貫</span></td>';
+              }
+            } else {
+              html += '<td class="new">' + fmt(n[0]) + '</td>';
+              html += '<td class="new">' + fmt(n[1]) + '</td>';
+            }
+            html += '</tr>';
+          });
+          html += '</tbody></table></section>';
+        });
+        host.innerHTML = html;
+      }
+      function buildTsumoOya() {
+        var host = document.getElementById("tables-tsumo-oya");
+        var html = "";
+        [1, 2, 3, 4].forEach(function (han) {
+          var badge = (han === 4) ? "現代は一部満貫" : "";
+          html += '<section class="han-card" aria-label="親ツモ ' + han + '飜の点数表">';
+          html += '<div class="han-head">';
+          html += '<div class="tile" aria-hidden="true"><span class="t-num">' + HAN_KANJI[han] + '</span><span class="t-han">飜</span></div>';
+          html += '<div><h3>' + han + '飜</h3><p class="han-sub">親ツモ ・ オール（1人あたり）</p></div>';
+          if (badge) html += '<span class="han-badge">' + badge + '</span>';
+          html += '</div>';
+          html += '<table class="score"><thead>';
+          html += '<tr>'
+            + '<th class="group-fu" scope="col"></th>'
+            + '<th class="group-old" scope="col">旧 式<span class="g-sub">自摸栄 ・ 転記</span></th>'
+            + '<th class="group-new" scope="col">現 代<span class="g-sub">場ゾロあり</span></th>'
+            + '</tr>';
+          html += '<tr class="col-head">'
+            + '<th scope="col">符</th>'
+            + '<th scope="col" class="old-h last">オール</th>'
+            + '<th scope="col">オール</th>'
+            + '</tr>';
+          html += '</thead><tbody>';
+          TSUMO_FUS.forEach(function (fu) {
+            var o = TSUMO_OYA_OLD[fu][han];
+            var n = TSUMO_OYA_NEW[fu][han];
+            html += '<tr><th class="fu" scope="row">' + fu + '<small> 符</small></th>';
+            html += '<td class="old last all-cell">' + fmtOld(o) + '</td>';
+            if (n && typeof n === "object" && n.mangan) {
+              if (n.v) html += '<td class="new all-cell"><span class="mangan">満貫</span> ' + fmt(n.v) + 'オール</td>';
+              else html += '<td class="new all-cell"><span class="mangan">満貫</span></td>';
+            } else {
+              html += '<td class="new all-cell">' + fmt(n) + '</td>';
+            }
+            html += '</tr>';
+          });
+          html += '</tbody></table></section>';
+        });
+        host.innerHTML = html;
+      }
+
+      /* ---------- ルックアップ ---------- */
+      var curMode = "ron", curHan = 1, curFu = 30;
+      function rowHtml(who, ptsHtml) {
+        return '<div class="rc-who"><span class="who">' + who + '</span><span class="pts">' + ptsHtml + '</span></div>';
+      }
+      function ptsHtml(n) { return fmt(n) + "<small>点</small>"; }
+      function renderLookup() {
+        var oldRows = document.getElementById("res-old-rows");
+        var newRows = document.getElementById("res-new-rows");
+        var oldLabel = document.getElementById("res-old-label");
+        var newLabel = document.getElementById("res-new-label");
+        var note = document.getElementById("res-note");
+        var arrow = document.getElementById("res-arrow");
+        if (curMode === "ron") {
+          oldLabel.textContent = "旧式 ― 場ゾロなし";
+          newLabel.textContent = "現代 ― 場ゾロあり";
+          arrow.innerHTML = '<span class="big">→</span>×4＋<br />切り上げ';
+          var d = DATA[curHan][curFu];
+          if (!d) { curFu = 30; d = DATA[curHan][30]; syncFuSeg(); }
+          oldRows.innerHTML = rowHtml("子ロン", ptsHtml(d.ok)) + rowHtml("親ロン", ptsHtml(d.oo));
+          if (d.newMangan) {
+            newRows.innerHTML = rowHtml("子ロン", '<span style="font-size:.62em;vertical-align:2px;">満貫 </span>' + ptsHtml(d.nk)) + rowHtml("親ロン", ptsHtml(d.no));
+            note.innerHTML = "現代は<b>満貫</b>で頭打ち。旧式には満貫の上限がなく、<b>" + fmt(d.ok) + " / " + fmt(d.oo) + "</b> のまま10点単位で割り切れます（実物カード準拠）。";
+          } else {
+            newRows.innerHTML = rowHtml("子ロン", ptsHtml(d.nk)) + rowHtml("親ロン", ptsHtml(d.no));
+            note.innerHTML = "旧式は <b>" + fmt(d.ok) + " / " + fmt(d.oo) + "</b> ともに10点単位で割り切れます。現代は100点切り上げのため、単純な4倍（" + fmt(d.ok * 4) + " / " + fmt(d.oo * 4) + "）より少し大きな数字になります。";
+          }
+          return;
+        }
+        if (curMode === "ko") {
+          oldLabel.textContent = "旧式 ― 自摸栄（転記）";
+          newLabel.textContent = "現代 ― 子ツモ";
+          arrow.innerHTML = '<span class="big">→</span>旧式⇔<br />現代';
+          var o = TSUMO_KO_OLD[curFu][curHan];
+          var n = TSUMO_KO_NEW[curFu][curHan];
+          oldRows.innerHTML = rowHtml("子払い", ptsHtml(o[0])) + rowHtml("親払い", ptsHtml(o[1]));
+          var oldTotal = o[0] * 2 + o[1];
+          if (n && n.mangan) {
+            if (n.v) {
+              newRows.innerHTML = rowHtml("子払い", '<span style="font-size:.62em;vertical-align:2px;">満貫 </span>' + ptsHtml(n.v[0])) + rowHtml("親払い", ptsHtml(n.v[1]));
+              note.innerHTML = "現代は<b>満貫</b>（" + fmt(n.v[0]) + " ・ " + fmt(n.v[1]) + "）。旧式は上限なく <b>" + fmt(o[0]) + " ・ " + fmt(o[1]) + "</b>（合計 " + fmt(oldTotal) + "点）です。";
+            } else {
+              newRows.innerHTML = rowHtml("子ツモ", "満貫") + rowHtml("合計", ptsHtml(8000));
+              note.innerHTML = "現代は<b>満貫</b>です。旧式は上限なく <b>" + fmt(o[0]) + " ・ " + fmt(o[1]) + "</b>（合計 " + fmt(oldTotal) + "点）です。";
+            }
+          } else {
+            var newTotal = n[0] * 2 + n[1];
+            newRows.innerHTML = rowHtml("子払い", ptsHtml(n[0])) + rowHtml("親払い", ptsHtml(n[1]));
+            note.innerHTML = "子ツモ " + curHan + "飜" + curFu + "符 ― 旧式は合計 <b>" + fmt(oldTotal) + "点</b>（" + fmt(o[0]) + " ・ " + fmt(o[1]) + "）、現代は合計 <b>" + fmt(newTotal) + "点</b>（" + fmt(n[0]) + " ・ " + fmt(n[1]) + "）。旧式は10点単位で割り切れます。";
+          }
+          return;
+        }
+        // 親ツモ
+        oldLabel.textContent = "旧式 ― 自摸栄（転記）";
+        newLabel.textContent = "現代 ― 親ツモ";
+        arrow.innerHTML = '<span class="big">→</span>旧式⇔<br />現代';
+        var oo = TSUMO_OYA_OLD[curFu][curHan];
+        var nn = TSUMO_OYA_NEW[curFu][curHan];
+        oldRows.innerHTML = rowHtml("オール", ptsHtml(oo)) + rowHtml("合計（×3）", ptsHtml(oo * 3));
+        if (nn && typeof nn === "object" && nn.mangan) {
+          if (nn.v) {
+            newRows.innerHTML = rowHtml("オール", '<span style="font-size:.62em;vertical-align:2px;">満貫 </span>' + ptsHtml(nn.v)) + rowHtml("合計（×3）", ptsHtml(12000));
+            note.innerHTML = "現代は<b>満貫</b>（" + fmt(nn.v) + "オール）。旧式は上限なく <b>" + fmt(oo) + "オール</b>（合計 " + fmt(oo * 3) + "点）です。";
+          } else {
+            newRows.innerHTML = rowHtml("親ツモ", "満貫") + rowHtml("合計", ptsHtml(12000));
+            note.innerHTML = "現代は<b>満貫</b>です。旧式は上限なく <b>" + fmt(oo) + "オール</b>（合計 " + fmt(oo * 3) + "点）です。";
+          }
+        } else {
+          newRows.innerHTML = rowHtml("オール", ptsHtml(nn)) + rowHtml("合計（×3）", ptsHtml(nn * 3));
+          note.innerHTML = "親ツモ " + curHan + "飜" + curFu + "符 ― 旧式は <b>" + fmt(oo) + "オール</b>（合計 " + fmt(oo * 3) + "点）、現代は <b>" + fmt(nn) + "オール</b>（合計 " + fmt(nn * 3) + "点）。";
+        }
+      }
+      function syncFuSeg() {
+        var seg = document.getElementById("seg-fu");
+        seg.querySelectorAll("button").forEach(function (b) {
+          b.setAttribute("aria-pressed", String(parseInt(b.getAttribute("data-fu"), 10) === curFu));
+        });
+      }
+      function syncFuVisibility() {
+        var isTsumo = curMode !== "ron";
+        document.getElementById("fu-btn-70").classList.toggle("is-hidden", false);
+        document.getElementById("fu-btn-80").classList.toggle("is-hidden", !isTsumo);
+        if (!isTsumo && curFu === 80) { curFu = 60; syncFuSeg(); }
+      }
+      function wireSeg(id, attr, apply, isString) {
+        var seg = document.getElementById(id);
+        seg.addEventListener("click", function (e) {
+          var btn = e.target.closest("button");
+          if (!btn || btn.classList.contains("is-hidden")) return;
+          seg.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+          btn.setAttribute("aria-pressed", "true");
+          apply(isString ? btn.getAttribute(attr) : parseInt(btn.getAttribute(attr), 10));
+          if (id === "seg-mode") syncFuVisibility();
+          renderLookup();
+        });
+      }
+
+      buildTables();
+      buildTsumoKo();
+      buildTsumoOya();
+      wireSeg("seg-mode", "data-mode", function (v) { curMode = v; }, true);
+      wireSeg("seg-han", "data-han", function (v) { curHan = v; });
+      wireSeg("seg-fu", "data-fu", function (v) { curFu = v; });
+      renderLookup();
+    </script>
+  </body>
+</html>
